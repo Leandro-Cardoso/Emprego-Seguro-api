@@ -1,6 +1,11 @@
 from flask import Flask, jsonify
 
+from config import Config
+from models import User, db
+
 app = Flask(__name__)
+app.config.from_object(Config)
+db.init_app(app)
 
 @app.route('/users')
 def users():
