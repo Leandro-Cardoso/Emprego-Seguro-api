@@ -6,10 +6,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(100), unique = True, nullable = False)
     email = db.Column(db.String(100), unique = True, nullable = False)
-    password = db.Column(db.String(100), unique = True, nullable = False)
+    password = db.Column(db.String(100), unique = False, nullable = False)
     phone = db.Column(db.String(100), unique = True, nullable = False)
-    location = db.Column(db.String(100), unique = True, nullable = False)
-    description = db.Column(db.String(100), unique = True, nullable = False)
+    location = db.Column(db.String(100), unique = False, nullable = False)
+    description = db.Column(db.String(100), unique = False, nullable = True)
 
     def to_dict(self):
         return {
