@@ -3,9 +3,18 @@ from flask import Flask, jsonify, request
 from config import Config
 from models import User, db
 
+# CONFIG:
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
+
+# ERROR:
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        'error' : 'not found',
+        'message' : 'The requested URL was not found on the server'
+    }), 404
 
 # USER:
 # ----- SELECT todos:
