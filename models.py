@@ -21,3 +21,25 @@ class User(db.Model):
             'location' : self.location,
             'description' : self.description
         }
+    
+class Service(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    category = db.Column(db.String(100))
+    price = db.Column(db.Numeric(10, 2))
+    location = db.Column(db.String(100), nullable=False)
+    published_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'title': self.title,
+            'description': self.description,
+            'category': self.category,
+            'price': float(self.price) if self.price else None,
+            'location': self.location,
+            'published_at': self.published_at.isoformat() if self.published_at else None
+        }
