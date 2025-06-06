@@ -1,31 +1,34 @@
 -- Criando a tabela usuarios --
-CREATE TABLE usuarios (
-    id_usuario SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    senha VARCHAR(100) NOT NULL,
-    tipo_usuario VARCHAR(30) -- Cliente ou Prestador de serviço --
+    password VARCHAR(100) NOT NULL,
+    phone VARCHAR(100)UNIQUE NOT NULL,
+    location VARCHAR(100) NOT NULL,
+    description TEXT
 );
 
 -- Criando a tabela servicos --
-CREATE TABLE servicos (
-    id_servico SERIAL PRIMARY KEY,
-    titulo VARCHAR(100) NOT NULL, -- Título do trabalho postado --
-    descricao TEXT,
-    categoria VARCHAR(100),
-    localizacao VARCHAR(100) NOT NULL,
-    id_usuario INT NOT NULL, -- Quem fez a publicação --
-    data_publicacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+CREATE TABLE services (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL, -- Título do trabalho postado --
+    descrition TEXT,
+    category VARCHAR(100),
+    location VARCHAR(100) NOT NULL,
+    id_user INT NOT NULL, -- Quem fez a publicação --
+    publication_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_user) REFERENCES usuarios(id_user)
 );
 
 -- Criando a tabela mensagens --
-CREATE TABLE mensagens (
-    id_mensagem SERIAL PRIMARY KEY,
-    id_remetente INT NOT NULL,
-    id_destinatario INT NOT NULL,
-    conteudo TEXT NOT NULL,
-    data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   FOREIGN KEY (id_remetente) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
-FOREIGN KEY (id_destinatario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    id_sender INT NOT NULL,
+    id_recipient INT NOT NULL,
+    content TEXT NOT NULL,
+    shipping_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   FOREIGN KEY (id_recipient) REFERENCES usuarios(id_user) ON DELETE CASCADE,
+FOREIGN KEY (id_sender) REFERENCES usuarios(id_user) ON DELETE CASCADE
 );
