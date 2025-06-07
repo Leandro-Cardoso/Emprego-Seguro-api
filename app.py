@@ -81,7 +81,23 @@ def get_service(service_id):
     return jsonify(service.to_dict())
 
 # ----- SELECT por KEYWORDS:
-# TODO Implementar SELECT por palavra chave para busca
+@app.route('/services/search', methods=['GET'])
+def search_services():
+    query = request.args.get('q')
+    if query:
+        keywords = query.split()
+        services_query = Service.query
+        for keyword in keywords:
+            services_query = services_query.filter(
+                (Service.title.ilike(f'%{keyword}%')) |
+                (Service.description.ilike(f'%{keyword}%')) |
+                (Service.category.ilike(f'%{keyword}%'))
+            )
+        services = services_query.all()
+        return jsonify([service.to_dict() for service in services])
+    else:
+        return 404
+
 # ----- INSERT usuario:
 @app.route('/services', methods = ['POST'])
 def insert_service():
