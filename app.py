@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 
 from config import Config
-from models import User, db
+from models import User, Service, Message, db
 
 # CONFIG:
 app = Flask(__name__)
@@ -29,7 +29,7 @@ def get_user(user_id):
     user = User.query.get_or_404(user_id)
     return jsonify(user.to_dict())
 
-# ----- Inserir usuario:
+# ----- INSERT usuario:
 @app.route('/users', methods = ['POST'])
 def insert_user():
     data = request.get_json()
@@ -66,6 +66,24 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     return '', 204
+
+# TODO: Implementar controllers de SERVICE:
+# SERVICE:
+# ----- SELECT todos:
+# ----- SELECT por ID:
+# ----- SELECT por KEYWORDS:
+# TODO Implementar SELECT por palavra chave para busca
+# ----- INSERT usuario:
+# ----- UPDATE por ID:
+# ----- DELETE por ID:
+
+# TODO Implementar controllers de MESSAGE:
+# MESSAGE:
+# ----- SELECT todos:
+# ----- SELECT por ID:
+# ----- INSERT usuario:
+# ----- UPDATE por ID:
+# ----- DELETE por ID:
 
 # RUN:
 if __name__ == '__main__':
