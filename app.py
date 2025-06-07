@@ -67,15 +67,58 @@ def delete_user(user_id):
     db.session.commit()
     return '', 204
 
-# TODO: Implementar controllers de SERVICE:
 # SERVICE:
 # ----- SELECT todos:
+@app.route('/services')
+def services():
+    services = Service.query.all()
+    return jsonify([service.to_dict() for service in services])
+
 # ----- SELECT por ID:
+@app.route('/services/<int:service_id>', methods = ['GET'])
+def get_service(service_id):
+    service = Service.query.get_or_404(service_id)
+    return jsonify(service.to_dict())
+
 # ----- SELECT por KEYWORDS:
 # TODO Implementar SELECT por palavra chave para busca
 # ----- INSERT usuario:
+@app.route('/services', methods = ['POST'])
+def insert_service():
+    data = request.get_json()
+    new_service = Service(
+        user_id = data['user_id'],
+        title = data['title'],
+        description = data['description'],
+        category = data['category'],
+        price = data['price'],
+        location = data['location']
+    )
+    db.session.add(new_service)
+    db.session.commit()
+    return jsonify(new_service.to_dict()), 201
+
 # ----- UPDATE por ID:
+@app.route('/services/<int:service_id>', methods = ['PUT'])
+def update_service(service_id):
+    data = request.get_json()
+    service = Service.query.get_or_404(service_id)
+    service.user_id = data['user_id']
+    service.title = data['title']
+    service.description = data['description']
+    service.category = data['category']
+    service.price = data['price']
+    service.location = data['location']
+    db.session.commit()
+    return jsonify(service.to_dict())
+
 # ----- DELETE por ID:
+@app.route('/services/<int:service_id>', methods = ['DELETE'])
+def delete_service(service_id):
+    service = Service.query.get_or_404(service_id)
+    db.session.delete(service)
+    db.session.commit()
+    return '', 204
 
 # TODO Implementar controllers de MESSAGE:
 # MESSAGE:
