@@ -139,10 +139,46 @@ def delete_service(service_id):
 # TODO Implementar controllers de MESSAGE:
 # MESSAGE:
 # ----- SELECT todos:
+@app.route('/messages')
+def get_all_messages():
+    messages = Message.query.all()
+    return jsonify([msg.to_dict() for msg in messages])
+
 # ----- SELECT por ID:
-# ----- INSERT usuario:
+@app.route('/messages/<int:message_id>', methods=['GET'])
+def get_message(message_id):
+    message = Message.query.get_or_404(message_id)
+    return jsonify(message.to_dict())
+
+# ----- INSERT mensagem:
+@app.route('/messages', methods=['POST'])
+def insert_message():
+    data = request.get_json()
+    new_message = Message(
+        sender_id=data['sender_id'],
+        receiver_id=data['receiver_id'],
+        content=data['content']
+    )
+    db.session.add(new_message)
+    db.session.commit()
+    return jsonify(new_message.to_dict()), 201
+
 # ----- UPDATE por ID:
-# ----- DELETE por ID:
+@app.route('/messages/<int:message_id>', methods=['PUT'])
+def update_message(message_id):
+    data = request.get_json()
+    message = Message.query.get_or_404(message_id)
+    message.content = data['content']
+    db.session.commit()
+    return jsonify(message.to_dict())
+
+# ----- DELETE por ID
+@app.route('/messages/<int:message_id>', methods=['DELETE'])
+def delete_message(message_id):
+    message = Message.query.get_or_404(message_id)
+    db.session.delete(message)
+    db.session.commit()
+    return '', 204
 
 # RUN:
 if __name__ == '__main__':
