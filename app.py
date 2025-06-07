@@ -136,7 +136,6 @@ def delete_service(service_id):
     db.session.commit()
     return '', 204
 
-# TODO Implementar controllers de MESSAGE:
 # MESSAGE:
 # ----- SELECT todos:
 @app.route('/messages')
@@ -149,6 +148,30 @@ def get_all_messages():
 def get_message(message_id):
     message = Message.query.get_or_404(message_id)
     return jsonify(message.to_dict())
+
+# ----- SELECT por USER_ID (caixa de entrada):
+@app.route('/user/messages/in/<int:user_id>', methods=['GET'])
+def get_user_inbox(user_id):
+    messages_query = Message.query.filter(
+        (Message.receiver_id == user_id)
+    )
+    messages = messages_query.all()
+    if messages:
+        return jsonify([message.to_dict() for message in messages])
+    else:
+        return 404
+
+# ----- SELECT por USER_ID (caixa de saida):
+@app.route('/user/messages/out/<int:user_id>', methods=['GET'])
+def get_user_outbox(user_id):
+    messages_query = Message.query.filter(
+        (Message.sender_id == user_id)
+    )
+    messages = messages_query.all()
+    if messages:
+        return jsonify([message.to_dict() for message in messages])
+    else:
+        return 404
 
 # ----- INSERT mensagem:
 @app.route('/messages', methods=['POST'])
