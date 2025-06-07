@@ -98,7 +98,7 @@ def search_services():
     else:
         return 404
 
-# ----- INSERT usuario:
+# ----- INSERT servico:
 @app.route('/services', methods = ['POST'])
 def insert_service():
     data = request.get_json()
