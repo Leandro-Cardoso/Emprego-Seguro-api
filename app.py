@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 
 from config import Config
-from models import User, Service, Message, db
+from models import User,Message, db
 
 # CONFIG:
 app = Flask(__name__)
@@ -29,7 +29,7 @@ def get_user(user_id):
     user = User.query.get_or_404(user_id)
     return jsonify(user.to_dict())
 
-# ----- INSERT usuario:
+# ----- Inserir usuario:
 @app.route('/users', methods = ['POST'])
 def insert_user():
     data = request.get_json()
@@ -66,84 +66,84 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     return '', 204
-
-# SERVICE:
 # ----- SELECT todos:
-@app.route('/services')
-def services():
-    services = Service.query.all()
-    return jsonify([service.to_dict() for service in services])
+@app.route('/messages')
+def get_all_messages():
+    messages = Message.query.all()
+    return jsonify([msg.to_dict() for msg in messages])
 
 # ----- SELECT por ID:
-@app.route('/services/<int:service_id>', methods = ['GET'])
-def get_service(service_id):
-    service = Service.query.get_or_404(service_id)
-    return jsonify(service.to_dict())
+@app.route('/messages/<int:message_id>', methods=['GET'])
+def get_message(message_id):
+    message = Message.query.get_or_404(message_id)
+    return jsonify(message.to_dict())
 
-# ----- SELECT por KEYWORDS:
-@app.route('/services/search', methods=['GET'])
-def search_services():
-    query = request.args.get('q')
-    if query:
-        keywords = query.split()
-        services_query = Service.query
-        for keyword in keywords:
-            services_query = services_query.filter(
-                (Service.title.ilike(f'%{keyword}%')) |
-                (Service.description.ilike(f'%{keyword}%')) |
-                (Service.category.ilike(f'%{keyword}%'))
-            )
-        services = services_query.all()
-        return jsonify([service.to_dict() for service in services])
-    else:
-        return 404
-
-# ----- INSERT usuario:
-@app.route('/services', methods = ['POST'])
-def insert_service():
+# ----- INSERT mensagem:
+@app.route('/messages', methods=['POST'])
+def insert_message():
     data = request.get_json()
-    new_service = Service(
-        user_id = data['user_id'],
-        title = data['title'],
-        description = data['description'],
-        category = data['category'],
-        price = data['price'],
-        location = data['location']
+    new_message = Message(
+        sender_id=data['sender_id'],
+        receiver_id=data['receiver_id'],
+        content=data['content']
     )
-    db.session.add(new_service)
+    db.session.add(new_message)
     db.session.commit()
-    return jsonify(new_service.to_dict()), 201
+    return jsonify(new_message.to_dict()), 201
 
 # ----- UPDATE por ID:
-@app.route('/services/<int:service_id>', methods = ['PUT'])
-def update_service(service_id):
+@app.route('/messages/<int:message_id>', methods=['PUT'])
+def update_message(message_id):
     data = request.get_json()
-    service = Service.query.get_or_404(service_id)
-    service.user_id = data['user_id']
-    service.title = data['title']
-    service.description = data['description']
-    service.category = data['category']
-    service.price = data['price']
-    service.location = data['location']
+    message = Message.query.get_or_404(message_id)
+    message.content = data['content']
     db.session.commit()
-    return jsonify(service.to_dict())
+    return jsonify(message.to_dict())
 
 # ----- DELETE por ID:
-@app.route('/services/<int:service_id>', methods = ['DELETE'])
-def delete_service(service_id):
-    service = Service.query.get_or_404(service_id)
-    db.session.delete(service)
+@app.route('/messages/<int:message_id>', methods=['DELETE'])
+def delete_message(message_id):
+    message = Message.query.get_or_404(message_id)
+    db.session.delete(message)
     db.session.commit()
     return '', 204
-
-# TODO Implementar controllers de MESSAGE:
 # MESSAGE:
-# ----- SELECT todos:
-# ----- SELECT por ID:
-# ----- INSERT usuario:
-# ----- UPDATE por ID:
-# ----- DELETE por ID:
 
+# ----- SELECT por ID:
+@app.route('/messages/<int:message_id>', methods=['GET'])
+def get_message(message_id):
+    message = Message.query.get_or_404(message_id)
+    return jsonify(message.to_dict())
+
+# ----- INSERT mensagem:
+@app.route('/messages', methods=['POST'])
+def insert_message():
+    data = request.get_json()
+    new_message = Message(
+        sender_id=data['sender_id'],
+        receiver_id=data['receiver_id'],
+        content=data['content']
+    )
+    db.session.add(new_message)
+    db.session.commit()
+    return jsonify(new_message.to_dict()), 201
+
+# ----- UPDATE por ID:
+@app.route('/messages/<int:message_id>', methods=['PUT'])
+def update_message(message_id):
+    data = request.get_json()
+    message = Message.query.get_or_404(message_id)
+    message.content = data['content']
+    db.session.commit()
+    return jsonify(message.to_dict())
+
+# ----- DELETE por ID:
+@app.route('/messages/<int:message_id>', methods=['DELETE'])
+def delete_message(message_id):
+    message = Message.query.get_or_404(message_id)
+    db.session.delete(message)
+    db.session.commit()
+    return '', 204    
 # RUN:
 if __name__ == '__main__':
     with app.app_context():
