@@ -203,6 +203,17 @@ def delete_message(message_id):
     db.session.commit()
     return '', 204
 
+# LOGIN:
+@app.route('/login', methods=['POST'])
+def login_user():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    user = User.query.filter_by(username=username).first()
+    if not user or not user.password == password:
+        return '', 401
+    return jsonify(user.to_dict()), 200
+
 # RUN:
 if __name__ == '__main__':
     with app.app_context():
