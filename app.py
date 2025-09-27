@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS 
 
 from config import Config
 from models import User, Service, Message, db
@@ -7,6 +8,9 @@ from models import User, Service, Message, db
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
+
+# PERMISSIONS:
+CORS(app)
 
 # ERROR:
 @app.errorhandler(404)
