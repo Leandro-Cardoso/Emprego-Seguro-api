@@ -78,6 +78,17 @@ def services():
     services = Service.query.all()
     return jsonify([service.to_dict() for service in services])
 
+# ----- SELECT todos do mesmo usuário:
+@app.route('/users/<int:user_id>/services', methods=['GET'])
+def get_services_by_user(user_id):
+    
+    user_services = Service.query.filter_by(user_id=user_id).all()
+    
+    if not user_services:
+        return jsonify([]), 200
+
+    return jsonify([service.to_dict() for service in user_services]), 200
+
 # ----- SELECT por ID:
 @app.route('/services/<int:service_id>', methods = ['GET'])
 def get_service(service_id):
