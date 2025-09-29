@@ -150,9 +150,8 @@ Porta: 5001
 
         ```
         {
-            "sender_id" : <int>,
-            "receiver_id" : <int>,
-            "content" : <string>
+            "content" : <string>,
+            "read" : <bool><optional>
         }
         ```
     

@@ -206,6 +206,8 @@ def insert_message():
 def update_message(message_id):
     data = request.get_json()
     message = Message.query.get_or_404(message_id)
+    if 'read' in data:
+        message.read = data['read']
     message.content = data['content']
     db.session.commit()
     return jsonify(message.to_dict())
