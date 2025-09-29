@@ -50,6 +50,7 @@ class Message(db.Model):
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     sent_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    read = db.Column(db.Boolean, nullable=False, default=False)
 
     def to_dict(self):
         return {
@@ -57,5 +58,6 @@ class Message(db.Model):
             'sender_id': self.sender_id,
             'receiver_id': self.receiver_id,
             'content': self.content,
-            'sent_at': self.sent_at.isoformat() if self.sent_at else None
+            'sent_at': self.sent_at.isoformat() if self.sent_at else None,
+            'read': self.read
         }
