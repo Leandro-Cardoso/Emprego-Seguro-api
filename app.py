@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from sqlalchemy import desc
 
 from config import Config
 from models import User, Service, Message, db
@@ -155,7 +156,7 @@ def delete_service(service_id):
 # ----- SELECT todos:
 @app.route('/messages')
 def get_all_messages():
-    messages = Message.query.all()
+    messages = Message.query.order_by(desc(Message.sent_at)).all()
     return jsonify([msg.to_dict() for msg in messages])
 
 # ----- SELECT por ID:
@@ -169,7 +170,7 @@ def get_message(message_id):
 def get_user_inbox(user_id):
     messages_query = Message.query.filter(
         (Message.receiver_id == user_id)
-    )
+    ).order_by(desc(Message.sent_at))
     messages = messages_query.all()
     if messages:
         return jsonify([message.to_dict() for message in messages])
@@ -181,7 +182,7 @@ def get_user_inbox(user_id):
 def get_user_outbox(user_id):
     messages_query = Message.query.filter(
         (Message.sender_id == user_id)
-    )
+    ).order_by(desc(Message.sent_at))
     messages = messages_query.all()
     if messages:
         return jsonify([message.to_dict() for message in messages])
